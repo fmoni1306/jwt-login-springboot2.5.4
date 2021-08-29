@@ -1,10 +1,7 @@
 package com.example.jwttutorial.jwt;
 
-import lombok.extern.java.Log;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -36,6 +33,7 @@ public class JwtFilter extends GenericFilterBean {
         // 토큰의 인증정보를 SecurityContext 에 저장하는 역할 수행
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String jwt = resolveToken(httpServletRequest);
+
         String requestURI = httpServletRequest.getRequestURI();
         // StringUtils.hasText(jwt) jwt 가 비어 있지 않고 유효한 토큰이면
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
@@ -46,6 +44,7 @@ public class JwtFilter extends GenericFilterBean {
         } else {
             logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
         }
+
         filterChain.doFilter(request, response);
     }
 

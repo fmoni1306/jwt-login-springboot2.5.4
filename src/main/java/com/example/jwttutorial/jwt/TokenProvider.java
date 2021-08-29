@@ -34,7 +34,7 @@ public class TokenProvider implements InitializingBean {
 
 
     public TokenProvider(
-            @Value("${jwt.secret}") String secret,
+            @Value("${jwt.secret}") String secret,  // application.yml 에 설정된 정보 가져옴
             @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds) {
         this.secret = secret;
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
@@ -50,7 +50,6 @@ public class TokenProvider implements InitializingBean {
     }
 
     public String createToken(Authentication authentication) {
-        System.out.println("ddddddddddddddddddddddddddd");
         // Authentication객체의 권한정보를 이용해서 토큰을 생성하는 createToken 메소드 추가
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -59,15 +58,12 @@ public class TokenProvider implements InitializingBean {
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
 
-        String compact = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
-
-        System.out.println("compact = " + compact);
-        return compact;
     }
 
     public Authentication getAuthentication(String token) {
