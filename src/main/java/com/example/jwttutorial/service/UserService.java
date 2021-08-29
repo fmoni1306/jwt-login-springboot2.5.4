@@ -25,6 +25,7 @@ public class UserService {
 
     @Transactional
     public User signup(UserDto userDto) {
+        // 회원가입을 수행하는 로직
         if (userRepository.findOneWithAuthoritiesByUsername(userDto.getUsername()).orElse(null) != null) {
             throw new DuplicateMemberException("이미 가입되어 있는 유저입니다.");
         }
@@ -47,11 +48,13 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthorities(String username) {
+        // username을 기준으로 정보를 가져옴
         return userRepository.findOneWithAuthoritiesByUsername(username);
     }
 
     @Transactional(readOnly = true)
     public Optional<User> getMyUserWithAuthorities() {
+        // SecurityContext에 저장된 username의 정보만 가져옴
         return SecurityUtil.getCurrentUsername().flatMap(userRepository::findOneWithAuthoritiesByUsername);
     }
 }
